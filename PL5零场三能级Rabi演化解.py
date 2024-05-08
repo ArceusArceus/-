@@ -3,11 +3,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from qutip import *
+import mplcursors
 
 #参数设定
-delta = 2 * np.pi * 0.5 * 30 * 10 ** (-3) # 劈裂30MHz
-Rabi_R = 2 * np.pi * 0.5 * 10 * 10 ** (-3) # 右峰操控强度10MHz
-Rabi_L = 2 * np.pi * 0.5 * 2 * 10 ** (-3) # 左峰操控强度2MHz
+delta = 2 * np.pi * 0.5 * 29.0800 * 10 ** (-3) # 劈裂30MHz
+Rabi_R = 2 * np.pi * 0.5 * 12.6522160260718 * 10 ** (-3) # 右峰操控强度10MHz
+Rabi_L = 2 * np.pi * 0.5 * 3.40543836161306 * 10 ** (-3) # 左峰操控强度3MHz
 
 H_MW = Qobj([[0, Rabi_R, 0],[Rabi_R, 0, 1j * Rabi_L],[0, -1j * Rabi_L, 0]]) #基为{+,0,-}
 H_Level = Qobj([[delta,0,0],[0,0,0],[0,0,0]])
@@ -17,7 +18,7 @@ H_T =  H_MW + H_Level# 在左峰旋转坐标系下的总哈密顿量 = 微波哈
 psi0 = Qobj([[0],[1],[0]])   # 初态为0
 
 # 定义时间点
-tlist = np.linspace(0, 2000, 10000) 
+tlist = np.linspace(0, 1000, 10000) 
 
 # 演化
 Popu_0 = []
@@ -43,4 +44,24 @@ plt.plot(tlist, Popu_m, label=f"-")
 plt.xlabel('Time')
 plt.ylabel('Population')
 plt.legend()
+cursor = mplcursors.cursor(hover=True)
+cursor.connect("add", lambda sel: sel.annotation.set_text(f'({sel.target[0]}, {sel.target[1]})'))
 plt.show()
+
+# 用cos拟合0能级曲线，观察拟合出的Rabi频率与实际设定的左峰频率的差别
+Popu_0 = Popu_0 - np.mean(Popu_0)
+Spectrum = np.fft.fft(Popu_0)
+n = len(tlist)  # 数据点数
+T = tlist[1] - tlist[0]  # 采样间隔
+freq = np.fft.fftfreq(n, T)# 频率轴
+plt.figure()
+plt.plot(freq, np.abs(Spectrum))
+plt.title('FFT of the signal')
+plt.xlabel('Frequency (Hz)')
+plt.ylabel('Amplitude')
+plt.grid(True)
+cursor = mplcursors.cursor(hover=True)
+cursor.connect("add", lambda sel: sel.annotation.set_text(f'({sel.target[0]}, {sel.target[1]})'))
+plt.show()
+print(freq[np.argmax(Spectrum)])
+
