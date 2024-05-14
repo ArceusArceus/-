@@ -6,9 +6,9 @@ from qutip import *
 import mplcursors
 
 #参数设定
-Delta = 2 * np.pi * 0.5 *  48.9900 * 10 ** (-3) # 劈裂30MHz
-Rabi_R = 2 * np.pi * 0.5 * 12.2754704975671 / np.sqrt(2)  * 10 ** (-3) # 右峰操控强度10MHz
-Rabi_L = 2 * np.pi * 0.5 * 2.19103192747710 / np.sqrt(2)  * 10 ** (-3) # 左峰操控强度3MHz
+Delta = 2 * np.pi *  27.6700 * 10 ** (-3) # 劈裂30MHz
+Rabi_R = 2 * np.pi * 0.5 * 10.5773358202618 * 10 ** (-3) # 右峰操控强度10MHz
+Rabi_L = 2 * np.pi * 0.5 * 0.958104648718613 * 10 ** (-3) # 左峰操控强度3MHz
 
 H_MW = Qobj([[0, Rabi_R, 0],[Rabi_R, 0, 1j * Rabi_L],[0, -1j * Rabi_L, 0]]) #基为{+,0,-}
 H_Level = Qobj([[Delta,0,0],[0,0,0],[0,0,0]])
@@ -73,7 +73,7 @@ Popu_0_f = []
 
 delta_list = np.arange(-50,100,0.01) #干脆把右峰的Pulse CW也plot出来
 delta_list.reshape(-1,1)
-delta_list_H = 2 * np.pi * 0.5 *  delta_list * 10 ** (-3)
+delta_list_H = 2 * np.pi * delta_list * 10 ** (-3)
 for delta in delta_list_H:
     H_Level = Qobj([[Delta-delta,0,0],[0,0,0],[0,0,-delta]])
     H_T =  H_MW + H_Level
@@ -92,9 +92,11 @@ cursor.connect("add", lambda sel: sel.annotation.set_text(f'({sel.target[0]}, {s
 plt.show()
 
 # 换到模拟的含时Rabi的最低点，注意此时频率不在左峰，比左峰略高
-N = int(70/0.01)
+N = int(55/0.01)
 Popu_0_f = Popu_0_f[:N] #截取左峰，不要右峰
 delta = delta_list_H[np.argmin(Popu_0_f)]
+print('delta = ')
+print(delta/2/np.pi* 10 ** 3)
 H_Level = Qobj([[Delta-delta,0,0],[0,0,0],[0,0,-delta]])
 H_T =  H_MW + H_Level
 
