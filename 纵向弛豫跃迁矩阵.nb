@@ -1,0 +1,215 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 14.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      7176,        205]
+NotebookOptionsPosition[      6677,        187]
+NotebookOutlinePosition[      7094,        204]
+CellTagsIndexPosition[      7051,        201]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", "\:5b9a\:4e49\:7b26\:53f7\:53d8\:91cf", "*)"}], 
+  RowBox[{
+   RowBox[{
+    RowBox[{"ClearAll", "[", 
+     RowBox[{"gPlus1", ",", "gMinus1", ",", "g2"}], "]"}], ";"}], "\n", 
+   RowBox[{"(*", 
+    RowBox[{"\:58f0\:660e\:5b83\:4eec\:662f\:7b26\:53f7", "\:ff0c", 
+     RowBox[{
+     "\:4ee5\:4fbf", " ", "Mathematica", " ", 
+      "\:8fdb\:884c\:4ee3\:6570\:8fd0\:7b97"}]}], "*)"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"Symbol", "/@", 
+     RowBox[{"{", 
+      RowBox[{"\"\<gPlus1\>\"", ",", "\"\<gMinus1\>\"", ",", "\"\<g2\>\""}], 
+      "}"}]}], ";"}], "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{"\:5b9a\:4e49\:77e9\:9635", " ", "\[CapitalGamma]"}], "*)"}], 
+   "\n", 
+   RowBox[{
+    RowBox[{"GammaMatrix", "=", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"-", "gPlus1"}], "-", "g2"}], ",", "gPlus1", ",", "g2"}], 
+        "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"gPlus1", ",", 
+         RowBox[{
+          RowBox[{"-", "gPlus1"}], "-", "gMinus1"}], ",", "gMinus1"}], "}"}], 
+       ",", 
+       RowBox[{"{", 
+        RowBox[{"g2", ",", "gMinus1", ",", 
+         RowBox[{
+          RowBox[{"-", "gMinus1"}], "-", "g2"}]}], "}"}]}], "}"}]}], ";"}], 
+   "\[IndentingNewLine]", "\n", 
+   RowBox[{"(*", "\:6c42\:7279\:5f81\:503c", "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"eigenVals", "=", 
+     RowBox[{"Eigenvalues", "[", "GammaMatrix", "]"}]}], ";"}], "\n", 
+   "\[IndentingNewLine]", 
+   RowBox[{"(*", "\:6c42\:7279\:5f81\:5411\:91cf", "*)"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"eigenVecs", "=", 
+     RowBox[{"Eigenvectors", "[", "GammaMatrix", "]"}]}], ";"}], "\n", 
+   "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{"\:505a\:4e00\:4e9b\:5316\:7b80", "\:ff0c", 
+     RowBox[{"\:5f97\:5230\:66f4\:7b80\:6d01\:7684\:5f62\:5f0f", 
+      RowBox[{"\:ff08", "\:53ef\:9009", "\:ff09"}]}]}], "*)"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"eigenValsSimplified", "=", 
+     RowBox[{"FullSimplify", "[", "eigenVals", "]"}]}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"eigenVecsSimplified", "=", 
+     RowBox[{"FullSimplify", "[", "eigenVecs", "]"}]}], ";"}], 
+   "\[IndentingNewLine]", "\n", 
+   RowBox[{"(*", "\:8f93\:51fa\:7ed3\:679c", "*)"}], "\[IndentingNewLine]", 
+   RowBox[{"{", 
+    RowBox[{"eigenValsSimplified", ",", "eigenVecsSimplified"}], "}"}], 
+   "\n"}]}]], "Input",
+ CellChangeTimes->{{3.9451364761103935`*^9, 3.945136476111389*^9}, {
+  3.9451365092103996`*^9, 3.9451365147084084`*^9}, {3.94513695833531*^9, 
+  3.945136982972332*^9}, {3.945137051462261*^9, 3.9451370662056503`*^9}},
+ CellLabel->"In[26]:=",ExpressionUUID->"683db508-c751-6d47-a364-7e3f7d354e6f"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"0", ",", 
+     RowBox[{
+      RowBox[{"-", "g2"}], "-", "gMinus1", "-", "gPlus1", "-", 
+      SqrtBox[
+       RowBox[{
+        SuperscriptBox["g2", "2"], "-", 
+        RowBox[{"g2", " ", "gMinus1"}], "+", 
+        SuperscriptBox["gMinus1", "2"], "-", 
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{"g2", "+", "gMinus1"}], ")"}], " ", "gPlus1"}], "+", 
+        SuperscriptBox["gPlus1", "2"]}]]}], ",", 
+     RowBox[{
+      RowBox[{"-", "g2"}], "-", "gMinus1", "-", "gPlus1", "+", 
+      SqrtBox[
+       RowBox[{
+        SuperscriptBox["g2", "2"], "-", 
+        RowBox[{"g2", " ", "gMinus1"}], "+", 
+        SuperscriptBox["gMinus1", "2"], "-", 
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{"g2", "+", "gMinus1"}], ")"}], " ", "gPlus1"}], "+", 
+        SuperscriptBox["gPlus1", "2"]}]]}]}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"1", ",", "1", ",", "1"}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"-", 
+        FractionBox[
+         RowBox[{
+          RowBox[{"-", "gMinus1"}], "+", "gPlus1", "+", 
+          SqrtBox[
+           RowBox[{
+            SuperscriptBox["g2", "2"], "-", 
+            RowBox[{"g2", " ", "gMinus1"}], "+", 
+            SuperscriptBox["gMinus1", "2"], "-", 
+            RowBox[{
+             RowBox[{"(", 
+              RowBox[{"g2", "+", "gMinus1"}], ")"}], " ", "gPlus1"}], "+", 
+            SuperscriptBox["gPlus1", "2"]}]]}], 
+         RowBox[{"g2", "-", "gMinus1"}]]}], ",", 
+       FractionBox[
+        RowBox[{
+         RowBox[{"-", "g2"}], "+", "gPlus1", "+", 
+         SqrtBox[
+          RowBox[{
+           SuperscriptBox["g2", "2"], "-", 
+           RowBox[{"g2", " ", "gMinus1"}], "+", 
+           SuperscriptBox["gMinus1", "2"], "-", 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{"g2", "+", "gMinus1"}], ")"}], " ", "gPlus1"}], "+", 
+           SuperscriptBox["gPlus1", "2"]}]]}], 
+        RowBox[{"g2", "-", "gMinus1"}]], ",", "1"}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{
+       FractionBox[
+        RowBox[{"gMinus1", "-", "gPlus1", "+", 
+         SqrtBox[
+          RowBox[{
+           SuperscriptBox["g2", "2"], "-", 
+           RowBox[{"g2", " ", "gMinus1"}], "+", 
+           SuperscriptBox["gMinus1", "2"], "-", 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{"g2", "+", "gMinus1"}], ")"}], " ", "gPlus1"}], "+", 
+           SuperscriptBox["gPlus1", "2"]}]]}], 
+        RowBox[{"g2", "-", "gMinus1"}]], ",", 
+       RowBox[{"-", 
+        FractionBox[
+         RowBox[{"g2", "-", "gPlus1", "+", 
+          SqrtBox[
+           RowBox[{
+            SuperscriptBox["g2", "2"], "-", 
+            RowBox[{"g2", " ", "gMinus1"}], "+", 
+            SuperscriptBox["gMinus1", "2"], "-", 
+            RowBox[{
+             RowBox[{"(", 
+              RowBox[{"g2", "+", "gMinus1"}], ")"}], " ", "gPlus1"}], "+", 
+            SuperscriptBox["gPlus1", "2"]}]]}], 
+         RowBox[{"g2", "-", "gMinus1"}]]}], ",", "1"}], "}"}]}], "}"}]}], 
+  "}"}]], "Output",
+ CellChangeTimes->{{3.94513649159972*^9, 3.9451365198457603`*^9}, 
+   3.9451370164783134`*^9, 3.9451370678698864`*^9},
+ CellLabel->"Out[33]=",ExpressionUUID->"c530fe8c-c7c7-164b-ba91-afc72b71379b"]
+}, Open  ]]
+},
+WindowSize->{1720, 652},
+WindowMargins->{{Automatic, 1194.5}, {Automatic, 3}},
+FrontEndVersion->"14.0 for Microsoft Windows (64-bit) (2023\:5e7412\:670812\
+\:65e5)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"e6ae5ed2-fdd1-8542-bafd-5a405a1daed5"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 2786, 70, 488, "Input",ExpressionUUID->"683db508-c751-6d47-a364-7e3f7d354e6f"],
+Cell[3369, 94, 3292, 90, 132, "Output",ExpressionUUID->"c530fe8c-c7c7-164b-ba91-afc72b71379b"]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
+

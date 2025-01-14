@@ -5,10 +5,10 @@ import matplotlib.pyplot as plt
 from qutip import *
 import mplcursors
 
-#参数设定
-Delta = 2 * np.pi *  27.6700 * 10 ** (-3) # 劈裂30MHz
-Rabi_R = 2 * np.pi * 0.5 * 10.5773358202618 * 10 ** (-3) # 右峰操控强度10MHz
-Rabi_L = 2 * np.pi * 0.5 * 0.958104648718613 * 10 ** (-3) # 左峰操控强度3MHz
+#参数设定（零场）
+Delta = 2 * np.pi *  30 * 10 ** (-3) # 劈裂30MHz
+Rabi_R = 2 * np.pi * 0.5 * 5 * 10 ** (-3) # 右峰操控强度10MHz
+Rabi_L = 2 * np.pi * 0.5 * 3 * 10 ** (-3) # 左峰操控强度3MHz
 
 H_MW = Qobj([[0, Rabi_R, 0],[Rabi_R, 0, 1j * Rabi_L],[0, -1j * Rabi_L, 0]]) #基为{+,0,-}
 H_Level = Qobj([[Delta,0,0],[0,0,0],[0,0,0]])
@@ -65,7 +65,7 @@ plt.grid(True)
 cursor = mplcursors.cursor(hover=True)
 cursor.connect("add", lambda sel: sel.annotation.set_text(f'({sel.target[0]}, {sel.target[1]})'))
 plt.show()
-print(freq[np.argmax(Spectrum)])
+print('Rabi Freq = ',freq[np.argmax(Spectrum)])
 
 # plot含时Rabi (Pulse-CW)
 t_Pi = 0.5 * abs(1/freq[np.argmax(Spectrum)])
@@ -95,8 +95,7 @@ plt.show()
 N = int(55/0.01)
 Popu_0_f = Popu_0_f[:N] #截取左峰，不要右峰
 delta = delta_list_H[np.argmin(Popu_0_f)]
-print('delta = ')
-print(delta/2/np.pi* 10 ** 3)
+print('delta = ',delta/2/np.pi* 10 ** 3)
 H_Level = Qobj([[Delta-delta,0,0],[0,0,0],[0,0,-delta]])
 H_T =  H_MW + H_Level
 
@@ -130,7 +129,16 @@ Spectrum = np.abs(Spectrum)
 n = len(tlist)  # 数据点数
 T = tlist[1] - tlist[0]  # 采样间隔
 freq = np.fft.fftfreq(n, T)# 频率轴
-print(freq[np.argmax(Spectrum)])
+plt.figure()
+plt.plot(freq, Spectrum)
+plt.title('FFT of the signal')
+plt.xlabel('Frequency (Hz)')
+plt.ylabel('Amplitude')
+plt.grid(True)
+cursor = mplcursors.cursor(hover=True)
+cursor.connect("add", lambda sel: sel.annotation.set_text(f'({sel.target[0]}, {sel.target[1]})'))
+plt.show()
+print('Rabi Freq = ',freq[np.argmax(Spectrum)])
 
 
 
