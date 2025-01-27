@@ -372,8 +372,8 @@ if __name__ == "__main__":
     N_y = sum([p=='Y' for p in pulses_xy8])
     total_pulse_time = N_x*t_pi_x + N_y*t_pi_y
     T_min = total_pulse_time
-    T_max = 20.0
-    NT    = 21
+    T_max = 30.0
+    NT    = 31
     T_values = np.linspace(T_min, T_max, NT)
 
     # 理论 T2
