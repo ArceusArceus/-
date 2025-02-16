@@ -29,25 +29,27 @@ def calc_theoretical_T2(N_pulse, tau_c, b):
     T2 = (N_pulse)^(2/3) * (12*tau_c / b^2)^(1/3) / sqrt(2).
     """
     return (N_pulse**(2./3.) 
-            * (12.*tau_c / (b**2))**(1./3.) 
-            / np.sqrt(2))
+            * (12.*tau_c / (b**2))**(1./3.) )
+            
 
 ##############################################################################
 # (A) generate_ou_noise - Exact Discretization, sigma = sqrt(2)*b/sqrt(tau_c)
 ##############################################################################
-def generate_ou_noise(t_list, tau_c, b, B0=0.0, seed=None):
+def generate_ou_noise(t_list, tau_c, b, B0=None, seed=None):
     """
     在给定时间网格 t_list 上生成 1D O-U 过程 X(t):
       dX = -(1/tau_c)*X dt + sigma dW
     其中 sigma = sqrt(2)*b/sqrt(tau_c),
     => 平稳方差: X_infinity ~ Normal(0, b^2).
-
-    使用精确离散(Exact)公式:
-      X_{n+1} = e^{-dt/tau_c} * X_n 
-                + sigma* sqrt( (tau_c/2)*(1 - e^{-2 dt/tau_c}) ) * N(0,1).
+    
+    如果 B0 为 None，则随机初始化 B0 为符合正态分布的随机数。
     """
     if seed is not None:
         np.random.seed(seed)
+
+    # 如果B0为None，随机化 B0 为符合正态分布的随机值，均值为 0，方差为 b^2
+    if B0 is None:
+        B0 = np.random.normal(0, b)
 
     N = len(t_list)
     X_arr = np.zeros(N)
@@ -98,8 +100,8 @@ def run_single_experiment_general(
 
     intervals = [T_free/(2*N)] + [T_free/N]*(N-1) + [T_free/(2*N)]
 
-    sx, sy, sz = sigmax(), sigmay(), sigmaz()
-    H0 = (omega0/2)*sz
+    sx, sy, sz = sigmax(), sigmay(), sigmaz() #注意S=1/2的旋转算符是sigma/2，后面勿漏2因子
+    H0 = (omega0/2)*sz #2因子
 
     def beta_t(t, args=None):
         if t<0:
@@ -117,7 +119,7 @@ def run_single_experiment_general(
         f2 = ou_noise[idx]
         return f1 + (f2 - f1)*((t - t1)/(t2 - t1))
 
-    H_noise = [sz, beta_t]
+    H_noise = [sz/2.0, beta_t]
 
     # X脉冲轴
     axis_x_x = np.sqrt(max(0., 1.-ny*ny - nz*nz))
@@ -149,7 +151,7 @@ def run_single_experiment_general(
         if dt_free>1e-12:
             t_span = np.linspace(t_accum, t_accum+dt_free, N_free_step)
             H_free = [H0, H_noise]
-            res_free = mesolve(H_free, current_state, t_span, [], [],
+            res_free = mesolve(H_free, current_state, t_span, [], [], 
                                options=Options(store_final_state=True))
             current_state = res_free.final_state
             t_accum += dt_free
@@ -158,7 +160,7 @@ def run_single_experiment_general(
             all_states.extend(res_free.states[1:])
 
         op_pulse, eps_pulse, t_pulse = get_pulse_op(pulses[i])
-        amp = (np.pi + eps_pulse)/(2.* t_pulse)
+        amp = (np.pi + eps_pulse)/(2.* t_pulse) #2因子
         H_pulse = [H0, H_noise, [op_pulse, lambda t,args: amp]]
 
         t_span = np.linspace(t_accum, t_accum+t_pulse, N_pulse_step)
@@ -194,7 +196,7 @@ def run_monte_carlo_general(
     t_pi_x, t_pi_y,
     epsilon_x, epsilon_y,
     ny, nz, mx, mz,
-    tau_c, b, B0,
+    tau_c, b,
     psi0,
     omega0,
     N_free_step,
@@ -210,7 +212,7 @@ def run_monte_carlo_general(
     ou_tlist= np.linspace(0, T, N_noise_grid)
 
     # 先跑一次: seed=0
-    ou_noise_dummy= generate_ou_noise(ou_tlist, tau_c, b, B0=B0, seed=0)
+    ou_noise_dummy= generate_ou_noise(ou_tlist, tau_c, b, B0=None, seed=0)
     test_times, test_states= run_single_experiment_general(
         T,pulses,
         t_pi_x,t_pi_y,
@@ -229,7 +231,7 @@ def run_monte_carlo_general(
     bloch_z_sum= np.zeros(N_points)
 
     for _ in range(N_runs):
-        ou_noise= generate_ou_noise(ou_tlist, tau_c, b, B0=B0)
+        ou_noise= generate_ou_noise(ou_tlist, tau_c, b, B0=None)
         all_times, all_states= run_single_experiment_general(
             T, pulses,
             t_pi_x,t_pi_y,
@@ -260,7 +262,7 @@ def single_T_job(
     t_pi_x, t_pi_y,
     epsilon_x, epsilon_y,
     ny, nz, mx, mz,
-    tau_c, b, B0,
+    tau_c, b,
     psi0,
     omega0,
     N_free_step,
@@ -270,7 +272,7 @@ def single_T_job(
         N_runs, T_val, pulses,
         t_pi_x, t_pi_y,epsilon_x, epsilon_y,
         ny,nz, mx,mz,
-        tau_c, b, B0,
+        tau_c, b,
         psi0,omega0,
         N_free_step,N_pulse_step
     )
@@ -281,18 +283,17 @@ def single_T_job(
 ##############################################################################
 if __name__=="__main__":
     #==== 1) 参数设定 ====
-    tau_c= 25.0
-    b= 3.6
-    B0= 0.0
+    tau_c= 100
+    b= 30
 
-    t_pi_x= 0.001
-    t_pi_y= 0.001
+    t_pi_x= 0.00001
+    t_pi_y= 0.00001
     epsilon_x=0.0
     epsilon_y=0.0
-    ny,nz= 0.0,0.0
+    ny,nz= 0.0,0.0 #可以设定偏共振omega0，因此可以不用管nz
     mx,mz= 0.0,0.0
 
-    m=2
+    m=4
     base_xy8= ['X','Y','X','Y','Y','X','Y','X']
     pulses= base_xy8 * m
 
@@ -300,21 +301,21 @@ if __name__=="__main__":
     omega0= 0.0
 
     N_runs= 100
-    N_free_step= 50
-    N_pulse_step=20
+    N_free_step= 100
+    N_pulse_step= 20
 
     #=== 2) 理论 T2 ===
     N_pulse= len(pulses)   # =8*m
     T2_theory= calc_theoretical_T2(N_pulse, tau_c, b)
-    print(f"Using tau_c={tau_c}, b={b}, #pulses={N_pulse}, B0={B0}")
+    print(f"Using tau_c={tau_c}, b={b}, #pulses={N_pulse}")
     print(f"Theory T2= {T2_theory:.3f}")
 
     #=== 3) 扫描 T 值 ===
     N_x= sum(p=='X' for p in pulses)
     N_y= sum(p=='Y' for p in pulses)
     total_pulse_time= N_x*t_pi_x + N_y*t_pi_y
-    T_min= 10 * total_pulse_time
-    T_max= 3.0
+    T_min= 1000 * total_pulse_time
+    T_max= 5
     NT= 11
     T_values= np.linspace(T_min, T_max, NT)
 
@@ -326,7 +327,7 @@ if __name__=="__main__":
         t_pi_x=t_pi_x, t_pi_y=t_pi_y,
         epsilon_x=epsilon_x, epsilon_y=epsilon_y,
         ny=ny, nz=nz, mx=mx, mz=mz,
-        tau_c=tau_c, b=b, B0=B0,
+        tau_c=tau_c, b=b,
         psi0=psi0, omega0=omega0,
         N_free_step=N_free_step,
         N_pulse_step=N_pulse_step
@@ -359,7 +360,6 @@ if __name__=="__main__":
     plt.show()
 
     #=== 6) 画图2 => ln(-ln(C)) vs ln(T)
-    # 如果 C= e^{-(T/T2)^3}, 则 -ln(C)= (T/T2)^3 => ln(-ln(C))= 3 ln(T) - 3 ln(T2).
     T_vals_plot=[]
     Y_vals_plot=[]
     for (Tv, Cf) in zip(T_values, final_coherence_list):
