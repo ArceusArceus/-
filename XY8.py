@@ -283,7 +283,7 @@ def single_T_job(
 ##############################################################################
 if __name__=="__main__":
     #==== 1) 参数设定 ====
-    tau_c= 100
+    tau_c= 1
     b= 30
 
     t_pi_x= 0.00001
@@ -300,7 +300,7 @@ if __name__=="__main__":
     psi0= (basis(2,0)+basis(2,1)).unit()
     omega0= 0.0
 
-    N_runs= 100
+    N_runs= 1000 #1000可以收敛，100略有偏差
     N_free_step= 100
     N_pulse_step= 20
 
@@ -315,7 +315,7 @@ if __name__=="__main__":
     N_y= sum(p=='Y' for p in pulses)
     total_pulse_time= N_x*t_pi_x + N_y*t_pi_y
     T_min= 1000 * total_pulse_time
-    T_max= 5
+    T_max= 10
     NT= 11
     T_values= np.linspace(T_min, T_max, NT)
 
